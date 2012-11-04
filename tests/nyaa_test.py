@@ -44,10 +44,12 @@ class TestListAnime(unittest.TestCase):
     def test_fetch_anime_list(self):
 
         expected = [{
-            'subber': u'Commie',
-            'anime': u'Sword Art Online',
-            'episode': 18,
-            'torrent_url': u'http://www.nyaa.eu/?page=download&tid=370091',
+            'subber'      : u'Commie',
+            'anime'       : u'Sword Art Online',
+            'episode'     : 18,
+            'crc32'       : u'F440EE69',
+            'extension'   : u'mkv',
+            'torrent_url' : u'http://www.nyaa.eu/?page=download&tid=370091',
         }]
 
         with patch('animesubs.nyaa.fetch_rss', **self.config):
