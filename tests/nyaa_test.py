@@ -50,6 +50,7 @@ class TestListAnime(unittest.TestCase):
             'crc32'       : u'F440EE69',
             'extension'   : u'mkv',
             'torrent_url' : u'http://www.nyaa.eu/?page=download&tid=370091',
+            'filename'    : '[Commie] Sword Art Online - 18 [F440EE69].mkv',
         }]
 
         with patch('animesubs.nyaa.fetch_rss', **self.config):

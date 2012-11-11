@@ -25,6 +25,7 @@ def fetch_rss(user_id, term=None):
 def extract_info(entry):
     info = info_from_filename(entry['title'])
     info['torrent_url'] = entry['link']
+    info['filename'] = entry['title']
     return info
 
 def search(user_id, term=None):
