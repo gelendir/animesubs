@@ -53,7 +53,7 @@ class TestListAnime(unittest.TestCase):
         }]
 
         with patch('animesubs.nyaa.fetch_rss', **self.config):
-            result = nyaa.list(1, "Sword Art Online")
+            result = nyaa.search(1, "Sword Art Online")
             self.assertEquals(result, expected)
 
 
