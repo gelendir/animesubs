@@ -17,8 +17,8 @@ def fetch_rss(user_id, term=None):
         'user': user_id,
     }
 
-    if search:
-        params['term'] = term
+    if term:
+        params['term'] = term.encode('utf8')
 
     url = "{0}?{1}".format(BASE_URL, urllib.urlencode(params))
     rss = feedparser.parse(url)

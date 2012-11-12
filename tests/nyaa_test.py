@@ -1,3 +1,4 @@
+# coding=utf8
 import unittest
 import os
 import urllib
@@ -21,6 +22,7 @@ class TestFetchRss(unittest.TestCase):
         with patch('feedparser.parse', **self.config) as m:
             result = nyaa.fetch_rss(1)
             self.assertEquals(result, self.rss)
+            self.assertIs(type(result['entries'][0]['title']), unicode)
 
     def test_search_term_in_url(self):
         config = {'return_value': self.rss}
@@ -32,6 +34,13 @@ class TestFetchRss(unittest.TestCase):
             self.assertTrue('term=Sword+Art+Online' in url)
             self.assertTrue('user=1' in url)
             self.assertTrue(url.startswith("http://nyaa.eu"))
+
+    def test_search_term_unicode(self):
+        config = {'return_value': self.rss}
+        with patch('feedparser.parse', **self.config) as mocked:
+            nyaa.fetch_rss(1,  u"「K」")
+            url = mocked.call_args[0][0]
+            self.assertIn(u'term=%E3%80%8CK%E3%80%8D',  url)
 
 
 class TestListAnime(unittest.TestCase):
