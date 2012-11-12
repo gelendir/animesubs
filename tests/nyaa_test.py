@@ -30,9 +30,9 @@ class TestFetchRss(unittest.TestCase):
         with patch('feedparser.parse', **self.config) as mocked:
             nyaa.fetch_rss(1, "Sword Art Online")
             url = mocked.call_args[0][0]
-            self.assertTrue('page=rss' in url)
-            self.assertTrue('term=Sword+Art+Online' in url)
-            self.assertTrue('user=1' in url)
+            self.assertIn('page=rss',  url)
+            self.assertIn('term=Sword+Art+Online',  url)
+            self.assertIn('user=1', url)
             self.assertTrue(url.startswith("http://nyaa.eu"))
 
     def test_search_term_unicode(self):
