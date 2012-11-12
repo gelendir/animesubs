@@ -45,8 +45,7 @@ def from_config(config):
 
         user_id = submitters[feed['submitter']]
         term = feed['search']
-        result = search(user_id, term)
-        print result
-        episodes.extend(result)
+        entries = search(user_id, term)
+        episodes.extend(entries)
 
     return episodes
