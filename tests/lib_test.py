@@ -1,3 +1,4 @@
+# coding=utf8
 import unittest
 from animesubs import lib
 
@@ -43,6 +44,30 @@ class TestFilenameWithUnderscores(unittest.TestCase):
 
     def test_extension(self):
         self.assertEquals(self.info['extension'], 'mkv')
+
+class TestUnicodeFilename(unittest.TestCase):
+
+    def setUp(self):
+        self.filename = u"[Whatup] 「CØDE：BREAKER」_-_34_[720p][10bit][1234ABCD].mkv"
+        self.info = lib.info_from_filename(self.filename)
+
+    def test_subber(self):
+        self.assertEquals(self.info['subber'], u'Whatup')
+
+    def test_anime_name(self):
+        self.assertEquals(self.info['anime'], u'「CØDE：BREAKER」')
+
+    def test_anime_episode(self):
+        self.assertEquals(self.info['episode'], 34)
+
+    def test_crc32(self):
+        self.assertEquals(self.info['crc32'], u'1234ABCD')
+
+    def test_resolution(self):
+        self.assertEquals(self.info['resolution'], u'720p')
+
+    def test_extension(self):
+        self.assertEquals(self.info['extension'], u'mkv')
 
 
 class TestFilenameWithDashes(unittest.TestCase):
