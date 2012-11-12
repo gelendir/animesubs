@@ -60,6 +60,9 @@ class TestListAnime(unittest.TestCase):
 class TestFromConfig(unittest.TestCase):
 
     def setUp(self):
+        self.log_patcher = patch.object(nyaa.logger, 'info')
+        self.log_patcher.start()
+
         self.submitters = {
             'Commie'       : 1,
             'UTW'          : 2,
@@ -84,6 +87,11 @@ class TestFromConfig(unittest.TestCase):
             'torrent_url' : u'http://www.nyaa.eu/?page=download&tid=354607',
             'filename'    : '[UTW]_Accel_World_-_24_[h264-720p][1DF1511D].mkv',
         }
+
+
+    def tearDown(self):
+        self.log_patcher.stop()
+
 
     def test_one_feed(self):
         config = {
