@@ -45,7 +45,7 @@ def info_from_filename(filename):
     return info
 
 
-def find_existing_episodes(filelist, episodes):
+def filter_existing(filelist, episodes):
     episode_set = set(x['filename'].replace("_", " ") for x in episodes)
     file_set = set(x.replace("_", " ") for x in filelist)
 
@@ -53,6 +53,8 @@ def find_existing_episodes(filelist, episodes):
 
     return [x for x in episodes if x['filename'].replace("_", " ") in found]
 
-def find_missing_episodes(filelist, episodes):
-    existing = find_existing_episodes(filelist, episodes)
+def filter_missing(filelist, episodes):
+    existing = filter_existing(filelist, episodes)
     return [x for x in episodes if x not in existing]
+
+

@@ -109,12 +109,12 @@ class TestFilenameWithAdditionalInfo(unittest.TestCase):
     def test_crc32(self):
         self.assertEquals(self.info['crc32'], '3E82FF36')
 
-class TestFindExistingEpisodes(unittest.TestCase):
+class TestFilterExisting(unittest.TestCase):
 
     def test_empty_filelist(self):
         episodes = []
         filelist = []
-        result = lib.find_existing_episodes(filelist, episodes)
+        result = lib.filter_existing(filelist, episodes)
         self.assertEquals(result, [])
 
     def test_one_episode_no_files(self):
@@ -122,7 +122,7 @@ class TestFindExistingEpisodes(unittest.TestCase):
             {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"}
         ]
         filelist = []
-        result = lib.find_existing_episodes(filelist, episodes)
+        result = lib.filter_existing(filelist, episodes)
         self.assertEquals(result, [])
 
     def test_one_file_no_episodes(self):
@@ -130,7 +130,7 @@ class TestFindExistingEpisodes(unittest.TestCase):
         filelist = [
             "[HorribleSubs] Magi - 04 [1080p].mkv"
         ]
-        result = lib.find_existing_episodes(filelist, episodes)
+        result = lib.filter_existing(filelist, episodes)
         self.assertEquals(result, [])
 
     def test_filename_with_underscores(self):
@@ -140,7 +140,7 @@ class TestFindExistingEpisodes(unittest.TestCase):
         filelist = [
             "[HorribleSubs]_Magi_-_04_[1080p].mkv"
         ]
-        result = lib.find_existing_episodes(filelist, episodes)
+        result = lib.filter_existing(filelist, episodes)
         self.assertEquals(result, episodes)
 
     def test_random_files_in_filelist(self):
@@ -152,7 +152,7 @@ class TestFindExistingEpisodes(unittest.TestCase):
             "file1.txt",
             "file2.txt",
         ]
-        result = lib.find_existing_episodes(filelist, episodes)
+        result = lib.filter_existing(filelist, episodes)
         self.assertEquals(result, episodes)
 
 
@@ -169,7 +169,7 @@ class TestFindExistingEpisodes(unittest.TestCase):
             {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"},
         ]
 
-        result = lib.find_existing_episodes(filelist, episodes)
+        result = lib.filter_existing(filelist, episodes)
         self.assertEquals(result, expected)
 
 class TestFindMissingEpisodes(unittest.TestCase):
@@ -177,7 +177,7 @@ class TestFindMissingEpisodes(unittest.TestCase):
     def test_empty_filelist(self):
         filelist = []
         episodes = []
-        result = lib.find_missing_episodes(filelist, episodes)
+        result = lib.filter_missing(filelist, episodes)
         self.assertEquals(result, [])
 
     def test_one_episode_no_files(self):
@@ -185,7 +185,7 @@ class TestFindMissingEpisodes(unittest.TestCase):
             {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"}
         ]
         filelist = []
-        result = lib.find_missing_episodes(filelist, episodes)
+        result = lib.filter_missing(filelist, episodes)
         self.assertEquals(result, episodes)
 
     def test_one_file_no_episodes(self):
@@ -193,7 +193,7 @@ class TestFindMissingEpisodes(unittest.TestCase):
         filelist = [
             "[HorribleSubs] Magi - 04 [1080p].mkv"
         ]
-        result = lib.find_missing_episodes(filelist, episodes)
+        result = lib.filter_missing(filelist, episodes)
         self.assertEquals(result, [])
 
     def test_filename_with_underscores(self):
@@ -203,7 +203,7 @@ class TestFindMissingEpisodes(unittest.TestCase):
         filelist = [
             "[HorribleSubs]_Magi_-_04_[1080p].mkv"
         ]
-        result = lib.find_missing_episodes(filelist, episodes)
+        result = lib.filter_missing(filelist, episodes)
         self.assertEquals(result, [])
 
     def test_random_files_in_filelist(self):
@@ -215,7 +215,7 @@ class TestFindMissingEpisodes(unittest.TestCase):
             "file1.txt",
             "file2.txt",
         ]
-        result = lib.find_missing_episodes(filelist, episodes)
+        result = lib.filter_missing(filelist, episodes)
         self.assertEquals(result, [])
 
 
@@ -232,7 +232,7 @@ class TestFindMissingEpisodes(unittest.TestCase):
             {'filename': "[HorribleSubs] Magi - 05 [1080p].mkv"},
         ]
 
-        result = lib.find_missing_episodes(filelist, episodes)
+        result = lib.filter_missing(filelist, episodes)
         self.assertEquals(result, expected)
 
 
