@@ -75,6 +75,7 @@ class TestFromConfig(unittest.TestCase):
         self.submitters = {
             'Commie'       : 1,
             'UTW'          : 2,
+            'sage-koi'     : 3,
         }
 
         self.sword_art_online = {
@@ -97,6 +98,15 @@ class TestFromConfig(unittest.TestCase):
             'filename'    : '[UTW]_Accel_World_-_24_[h264-720p][1DF1511D].mkv',
         }
 
+        self.code_breaker = {
+            'subber'      : u'sage-koi',
+            'anime'       : u'CØDE：BREAKER',
+            'episode'     : 3,
+            'crc32'       : u'735482AF',
+            'extension'   : u'mkv',
+            'torrent_url' : u'http://www.nyaa.eu/?page=download&tid=354607',
+            'filename'    : u'[sage-koi]_CØDE：BREAKER_-_03_[720p][10bit][735482AF].mkv'
+        }
 
     def tearDown(self):
         self.log_patcher.stop()
@@ -119,6 +129,23 @@ class TestFromConfig(unittest.TestCase):
             result = nyaa.from_config(config)
             self.assertEquals(result, expected)
             mock.assert_called_once_with(1, 'Sword Art Online')
+
+    def test_unicode_feed(self):
+        config = {
+            'submitters': self.submitters,
+            'feeds': [
+                {
+                    'submitter': u'sage-koi',
+                    'search': u'CØDE：BREAKER',
+                }
+            ]
+        }
+
+        expected = [self.code_breaker]
+        with patch('animesubs.nyaa.search', return_value=expected) as mock:
+            result = nyaa.from_config(config)
+            self.assertEquals(result, expected)
+            mock.assert_called_once_with(3, u'CØDE：BREAKER')
 
     def test_two_feeds(self):
         config = {
