@@ -3,136 +3,89 @@ import unittest
 from animesubs import lib
 
 
-class TestFilenameWithSpaces(unittest.TestCase):
+class TestInfoFromFilename(unittest.TestCase):
 
-    def setUp(self):
-        self.filename = "[Commie] Sword Art Online - 12v2 [ABCD1234].mkv"
-        self.info = lib.info_from_filename(self.filename)
+    def test_filename_with_spaces(self):
+        filename = "[Commie] Sword Art Online - 12v2 [ABCD1234].mkv"
+        expected = {
+            'subber'    : u'Commie',
+            'anime'     : u'Sword Art Online',
+            'episode'   : 12,
+            'version'   : 2,
+            'crc32'     : 'ABCD1234',
+            'extension' : u'mkv',
+        }
 
-    def test_subber(self):
-        self.assertEquals(self.info['subber'], 'Commie')
+        result = lib.info_from_filename(filename)
+        self.assertEquals(expected, result)
 
-    def test_anime_name(self):
-        self.assertEquals(self.info['anime'], "Sword Art Online")
+    def test_filename_with_underscores(self):
+        filename = "[Commie]_Sword_Art_Online_-_12v2_[ABCD1234].mkv"
+        expected = {
+            'subber'    : u'Commie',
+            'anime'     : u'Sword Art Online',
+            'episode'   : 12,
+            'version'   : 2,
+            'crc32'     : u'ABCD1234',
+            'extension' : u'mkv',
+        }
 
-    def test_anime_episode(self):
-        self.assertEquals(self.info['episode'], 12)
+        result = lib.info_from_filename(filename)
+        self.assertEquals(expected, result)
 
-    def test_episode_version(self):
-        self.assertEquals(self.info['version'], 2)
+    def test_filename_with_unicode(self):
+        filename = u"[Whatup] 「CØDE：BREAKER」_-_34_[720p][10bit][1234ABCD].mkv"
+        expected = {
+            'subber'     : u'Whatup',
+            'anime'      : u'「CØDE：BREAKER」',
+            'episode'    : 34,
+            'resolution' : u'720p',
+            'crc32'      : u'1234ABCD',
+            'extension'  : u'mkv',
+        }
 
-    def test_extension(self):
-        self.assertEquals(self.info['extension'], 'mkv')
+        result = lib.info_from_filename(filename)
+        self.assertEquals(expected, result)
 
-class TestFilenameWithUnderscores(unittest.TestCase):
+    def test_filename_with_dashes(self):
+        filename = "[UTW] Fate - Zero - 3 [ABCD1234].mkv"
+        expected = {
+            'subber'     : u'UTW',
+            'anime'      : u'Fate - Zero',
+            'episode'    : 3,
+            'crc32'      : u'ABCD1234',
+            'extension'  : u'mkv',
+        }
 
-    def setUp(self):
-        self.filename = "[Commie]_Sword_Art_Online_-_12v2_[ABCD1234].mkv"
-        self.info = lib.info_from_filename(self.filename)
+        result = lib.info_from_filename(filename)
+        self.assertEquals(expected, result)
 
-    def test_subber(self):
-        self.assertEquals(self.info['subber'], 'Commie')
+    def test_filename_with_only_resolution(self):
+        filename = "[HorribleSubs] Magi - 04 [1080p].mkv"
+        expected = {
+            'subber'     : u'HorribleSubs',
+            'anime'      : u'Magi',
+            'episode'    : 4,
+            'resolution' : '1080p',
+            'extension'  : u'mkv',
+        }
 
-    def test_anime_name(self):
-        self.assertEquals(self.info['anime'], "Sword Art Online")
+        result = lib.info_from_filename(filename)
+        self.assertEquals(expected, result)
 
-    def test_anime_episode(self):
-        self.assertEquals(self.info['episode'], 12)
+    def test_filename_with_additional_info(self):
+        filename = "[UTW-Mazui]_Kill_Me_Baby_-_07_[BD][h264-720p][3E82FF36].mkv"
+        expected = {
+            'subber'     : u'UTW-Mazui',
+            'anime'      : u'Kill Me Baby',
+            'episode'    : 7,
+            'resolution' : '720p',
+            'crc32'      : '3E82FF36',
+            'extension'  : u'mkv',
+        }
 
-    def test_episode_version(self):
-        self.assertEquals(self.info['version'], 2)
-
-    def test_extension(self):
-        self.assertEquals(self.info['extension'], 'mkv')
-
-class TestUnicodeFilename(unittest.TestCase):
-
-    def setUp(self):
-        self.filename = u"[Whatup] 「CØDE：BREAKER」_-_34_[720p][10bit][1234ABCD].mkv"
-        self.info = lib.info_from_filename(self.filename)
-
-    def test_subber(self):
-        self.assertEquals(self.info['subber'], u'Whatup')
-
-    def test_anime_name(self):
-        self.assertEquals(self.info['anime'], u'「CØDE：BREAKER」')
-
-    def test_anime_episode(self):
-        self.assertEquals(self.info['episode'], 34)
-
-    def test_crc32(self):
-        self.assertEquals(self.info['crc32'], u'1234ABCD')
-
-    def test_resolution(self):
-        self.assertEquals(self.info['resolution'], u'720p')
-
-    def test_extension(self):
-        self.assertEquals(self.info['extension'], u'mkv')
-
-
-class TestFilenameWithDashes(unittest.TestCase):
-
-    def setUp(self):
-        self.filename = "[UTW] Fate - Zero - 3 [ABCD1234].mkv"
-        self.info = lib.info_from_filename(self.filename)
-
-    def test_subber(self):
-        self.assertEquals(self.info['subber'], 'UTW')
-
-    def test_anime_name(self):
-        self.assertEquals(self.info['anime'], 'Fate - Zero')
-
-    def test_anime_episode(self):
-        self.assertEquals(self.info['episode'], 3)
-
-    def test_extension(self):
-        self.assertEquals(self.info['extension'], 'mkv')
-
-
-class TestFilenameWithOnlyResolution(unittest.TestCase):
-
-    def setUp(self):
-        self.filename = "[HorribleSubs] Magi - 04 [1080p].mkv"
-        self.info = lib.info_from_filename(self.filename)
-
-    def test_subber(self):
-        self.assertEquals(self.info['subber'], 'HorribleSubs')
-
-    def test_anime_name(self):
-        self.assertEquals(self.info['anime'], 'Magi')
-
-    def test_anime_episode(self):
-        self.assertEquals(self.info['episode'], 4)
-
-    def test_resolution(self):
-        self.assertEquals(self.info['resolution'], '1080p')
-
-    def test_extension(self):
-        self.assertEquals(self.info['extension'], 'mkv')
-
-class TestFilenameWithAdditionalInfo(unittest.TestCase):
-
-    def setUp(self):
-        self.filename = "[UTW-Mazui]_Kill_Me_Baby_-_07_[BD][h264-720p][3E82FF36].mkv"
-        self.info = lib.info_from_filename(self.filename)
-
-    def test_subber(self):
-        self.assertEquals(self.info['subber'], 'UTW-Mazui')
-
-    def test_anime_name(self):
-        self.assertEquals(self.info['anime'], 'Kill Me Baby')
-
-    def test_anime_episode(self):
-        self.assertEquals(self.info['episode'], 7)
-
-    def test_resolution(self):
-        self.assertEquals(self.info['resolution'], '720p')
-
-    def test_extension(self):
-        self.assertEquals(self.info['extension'], 'mkv')
-
-    def test_crc32(self):
-        self.assertEquals(self.info['crc32'], '3E82FF36')
+        result = lib.info_from_filename(filename)
+        self.assertEquals(expected, result)
 
 class TestFilterExisting(unittest.TestCase):
 
