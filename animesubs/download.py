@@ -1,5 +1,6 @@
 import urllib
 import logging
+import os
 from pprint import pformat
 
 logger = logging.getLogger(__name__)
