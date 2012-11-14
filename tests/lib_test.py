@@ -90,129 +90,144 @@ class TestInfoFromFilename(unittest.TestCase):
 class TestFilterExisting(unittest.TestCase):
 
     def test_empty_filelist(self):
-        episodes = []
         filelist = []
+        episodes = []
+        expected = []
+
         result = lib.filter_existing(filelist, episodes)
-        self.assertEquals(result, [])
+        self.assertEquals(result, expected)
 
     def test_one_episode_no_files(self):
-        episodes = [
-            {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"}
-        ]
         filelist = []
+        episodes = [
+            {'filename': "[HorribleSubs] Màgî - 04 [1080p].mkv"}
+        ]
+        expected = []
+
         result = lib.filter_existing(filelist, episodes)
-        self.assertEquals(result, [])
+        self.assertEquals(result, expected)
 
     def test_one_file_no_episodes(self):
-        episodes = []
         filelist = [
-            "[HorribleSubs] Magi - 04 [1080p].mkv"
+            "[HorribleSubs] Màgî - 04 [1080p].mkv"
         ]
+        episodes = []
+        expected = []
+
         result = lib.filter_existing(filelist, episodes)
-        self.assertEquals(result, [])
+        self.assertEquals(result, expected)
 
     def test_filename_with_underscores(self):
-        episodes = [
-            {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"}
-        ]
         filelist = [
-            "[HorribleSubs]_Magi_-_04_[1080p].mkv"
+            "[HorribleSubs]_Màgî_-_04_[1080p].mkv"
         ]
+        episodes = [
+            {'filename': "[HorribleSubs] Màgî - 04 [1080p].mkv"}
+        ]
+        expected = episodes
+
         result = lib.filter_existing(filelist, episodes)
-        self.assertEquals(result, episodes)
+        self.assertEquals(result, expected)
 
     def test_random_files_in_filelist(self):
-        episodes = [
-            {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"}
-        ]
         filelist = [
-            "[HorribleSubs]_Magi_-_04_[1080p].mkv",
+            "[HorribleSubs]_Màgî_-_04_[1080p].mkv",
             "file1.txt",
             "file2.txt",
         ]
-        result = lib.filter_existing(filelist, episodes)
-        self.assertEquals(result, episodes)
+        episodes = [
+            {'filename': "[HorribleSubs] Màgî - 04 [1080p].mkv"}
+        ]
+        expected = episodes
 
+        result = lib.filter_existing(filelist, episodes)
+        self.assertEquals(result, expected)
 
     def test_two_episodes_one_file(self):
-        episodes = [
-            {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"},
-            {'filename': "[HorribleSubs] Magi - 05 [1080p].mkv"},
-        ]
         filelist = [
-            "[HorribleSubs]_Magi_-_04_[1080p].mkv"
+            "[HorribleSubs]_Màgî_-_04_[1080p].mkv"
         ]
-
+        episodes = [
+            {'filename': "[HorribleSubs] Màgî - 04 [1080p].mkv"},
+            {'filename': "[HorribleSubs] Màgî - 05 [1080p].mkv"},
+        ]
         expected = [
-            {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"},
+            {'filename': "[HorribleSubs] Màgî - 04 [1080p].mkv"},
         ]
 
         result = lib.filter_existing(filelist, episodes)
         self.assertEquals(result, expected)
 
-class TestFindMissingEpisodes(unittest.TestCase):
+class TestFilterMissing(unittest.TestCase):
 
     def test_empty_filelist(self):
         filelist = []
         episodes = []
-        result = lib.filter_missing(filelist, episodes)
-        self.assertEquals(result, [])
-
-    def test_one_episode_no_files(self):
-        episodes = [
-            {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"}
-        ]
-        filelist = []
-        result = lib.filter_missing(filelist, episodes)
-        self.assertEquals(result, episodes)
-
-    def test_one_file_no_episodes(self):
-        episodes = []
-        filelist = [
-            "[HorribleSubs] Magi - 04 [1080p].mkv"
-        ]
-        result = lib.filter_missing(filelist, episodes)
-        self.assertEquals(result, [])
-
-    def test_filename_with_underscores(self):
-        episodes = [
-            {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"}
-        ]
-        filelist = [
-            "[HorribleSubs]_Magi_-_04_[1080p].mkv"
-        ]
-        result = lib.filter_missing(filelist, episodes)
-        self.assertEquals(result, [])
-
-    def test_random_files_in_filelist(self):
-        episodes = [
-            {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"}
-        ]
-        filelist = [
-            "[HorribleSubs]_Magi_-_04_[1080p].mkv",
-            "file1.txt",
-            "file2.txt",
-        ]
-        result = lib.filter_missing(filelist, episodes)
-        self.assertEquals(result, [])
-
-
-    def test_two_episodes_one_file(self):
-        episodes = [
-            {'filename': "[HorribleSubs] Magi - 04 [1080p].mkv"},
-            {'filename': "[HorribleSubs] Magi - 05 [1080p].mkv"},
-        ]
-        filelist = [
-            "[HorribleSubs]_Magi_-_04_[1080p].mkv"
-        ]
-
-        expected = [
-            {'filename': "[HorribleSubs] Magi - 05 [1080p].mkv"},
-        ]
+        expected = []
 
         result = lib.filter_missing(filelist, episodes)
         self.assertEquals(result, expected)
 
+    def test_one_episode_no_files(self):
+        filelist = []
+        episodes = [
+            {'filename': "[HorribleSubs] Màgî - 04 [1080p].mkv"}
+        ]
+        expected = episodes
+
+        result = lib.filter_missing(filelist, episodes)
+        self.assertEquals(result, expected)
+
+    def test_one_file_no_episodes(self):
+        filelist = [
+            "[HorribleSubs] Màgî - 04 [1080p].mkv"
+        ]
+        episodes = []
+        expected = []
+
+        result = lib.filter_missing(filelist, episodes)
+        self.assertEquals(result, expected)
+
+    def test_filename_with_underscores(self):
+        filelist = [
+            "[HorribleSubs]_Màgî_-_04_[1080p].mkv"
+        ]
+        episodes = [
+            {'filename': "[HorribleSubs] Màgî - 04 [1080p].mkv"}
+        ]
+        expected = []
+
+        result = lib.filter_missing(filelist, episodes)
+        self.assertEquals(result, expected)
+
+    def test_random_files_in_filelist(self):
+        filelist = [
+            "[HorribleSubs]_Màgî_-_04_[1080p].mkv",
+            "file1.txt",
+            "file2.txt",
+        ]
+        episodes = [
+            {'filename': "[HorribleSubs] Màgî - 04 [1080p].mkv"}
+        ]
+        expected = []
+
+        result = lib.filter_missing(filelist, episodes)
+        self.assertEquals(result, expected)
+
+    def test_two_episodes_one_file(self):
+        filelist = [
+            "[HorribleSubs]_Màgî_-_04_[1080p].mkv"
+        ]
+        episodes = [
+            {'filename': "[HorribleSubs] Màgî - 04 [1080p].mkv"},
+            {'filename': "[HorribleSubs] Màgî - 05 [1080p].mkv"},
+        ]
+        expected = [
+            {'filename': "[HorribleSubs] Màgî - 05 [1080p].mkv"},
+        ]
+
+        result = lib.filter_missing(filelist, episodes)
+        self.assertEquals(result, expected)
 
 if __name__ == "__main__":
     unittest.main()
