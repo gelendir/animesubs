@@ -26,15 +26,17 @@ def fetch_episodes(feedtype, feed, feedconfig):
     if feedtype == "nyaa":
         return nyaa.fetch_feed(feed, feedconfig)
 
-def fetch_feeds(feeds):
-    all_anime = []
+def fetch_episodes_from_feeds(config):
+    all_episodes = []
 
-    for feedtype, feedconfig in feeds:
-        entries = (
-            x for x in fetch_entries(feedtype, feedconfig)
-            if test_filters(feedconfig, x)
-        )
-        all_anime.extend(entries)
+    for feedtype, feedconfig in config.iteritems():
+        feeds = feedconfig.pop('feeds')
+        for feed in feeds:
+            episodes = (
+                e for e in fetch_episodes(feedtype, feed, feedconfig)
+                if test_filters(feed, e)
+            )
+            all_episodes.extend(episodes)
 
-    return anime
+    return all_episodes
 
