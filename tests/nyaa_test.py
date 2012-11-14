@@ -111,67 +111,56 @@ class TestFromConfig(unittest.TestCase):
     def tearDown(self):
         self.log_patcher.stop()
 
-
-    def test_one_feed(self):
+    def test_feed_one_episode(self):
         config = {
             'submitters': self.submitters,
-            'feeds': [
-                {
-                    'submitter': 'Commie',
-                    'search': 'Sword Art Online',
-                }
-            ]
         }
-
+        feed = {
+            'submitter': 'Commie',
+            'search': 'Sword Art Online',
+        }
+        search_result = [self.sword_art_online]
         expected = [self.sword_art_online]
 
-        with patch('animesubs.nyaa.search', return_value=expected) as mock:
-            result = nyaa.from_config(config)
-            self.assertEquals(result, expected)
-            mock.assert_called_once_with(1, 'Sword Art Online')
+        with patch('animesubs.nyaa.search', return_value=search_result) as mocked:
+            result = nyaa.fetch_feed(feed, config)
 
-    def test_unicode_feed(self):
+            self.assertEquals(result, expected)
+            mocked.assert_called_once_with(1, 'Sword Art Online')
+
+    def test_feed_unicode_episode(self):
         config = {
             'submitters': self.submitters,
-            'feeds': [
-                {
-                    'submitter': u'sage-koi',
-                    'search': u'CØDE：BREAKER',
-                }
-            ]
         }
-
+        feed = {
+            'submitter': u'sage-koi',
+            'search': u'CØDE：BREAKER',
+        }
+        search_result = [self.code_breaker]
         expected = [self.code_breaker]
-        with patch('animesubs.nyaa.search', return_value=expected) as mock:
-            result = nyaa.from_config(config)
+
+        with patch('animesubs.nyaa.search', return_value=search_result) as mocked:
+            result = nyaa.fetch_feed(feed, config)
+
             self.assertEquals(result, expected)
-            mock.assert_called_once_with(3, u'CØDE：BREAKER')
+            mocked.assert_called_once_with(3, u'CØDE：BREAKER')
 
-    def test_two_feeds(self):
+    def test_feed_two_episodes(self):
         config = {
-            'submitters': self.submitters,
-            'feeds': [
-                {
-                    'submitter': 'Commie',
-                    'search': 'Sword Art Online',
-                },
-                {
-                    'submitter': 'UTW',
-                    'search': 'Accel World',
-                },
-            ]
+            'submitters': self.submitters
         }
+        feed = {
+            'submitter': 'Commie',
+            'search': 'various',
+        }
+        search_result = [self.sword_art_online, self.code_breaker]
+        expected = [self.sword_art_online, self.code_breaker]
 
-        expected = [[self.sword_art_online], [self.accel_world]]
+        with patch('animesubs.nyaa.search', return_value=search_result) as mocked:
+            result = nyaa.fetch_feed(feed, config)
 
-        with patch('animesubs.nyaa.search', side_effect=expected) as mock:
-            result = nyaa.from_config(config)
-            print result
-            self.assertIn(self.sword_art_online, result)
-            self.assertIn(self.accel_world, result)
-            calls = mock.call_args_list
-            self.assertIn(call(1, 'Sword Art Online'), calls)
-            self.assertIn(call(2, 'Accel World'), calls)
+            self.assertEquals(result, expected)
+            mocked.assert_called_once_with(1, u'various')
 
 
 if __name__ == "__main__":

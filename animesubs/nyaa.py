@@ -36,16 +36,13 @@ def search(user_id, term=None):
     anime = [extract_info(e) for e in rss['entries']]
     return anime
 
-def from_config(config):
+def fetch_feed(feed, config):
     submitters = config['submitters']
-    episodes = []
 
-    for feed in config['feeds']:
-        logger.info("fetching %s %s", feed['submitter'], feed['search'])
+    logger.info("fetching %s", ', '.join('%s:%s' % x for x in feed.iteritems()))
 
-        user_id = submitters[feed['submitter']]
-        term = feed['search']
-        entries = search(user_id, term)
-        episodes.extend(entries)
-
+    user_id = submitters[feed['submitter']]
+    term = feed['search']
+    episodes = search(user_id, term)
     return episodes
+
