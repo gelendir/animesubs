@@ -22,9 +22,9 @@ def test_filters(feed, entry):
 
     return True
 
-def fetch_entries(feedtype, feedconfig):
+def fetch_episodes(feedtype, feed, feedconfig):
     if feedtype == "nyaa":
-        return nyaa.from_config(feedconfig)
+        return nyaa.fetch_feed(feed, feedconfig)
 
 def fetch_feeds(feeds):
     all_anime = []
