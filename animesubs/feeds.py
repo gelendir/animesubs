@@ -7,16 +7,16 @@ from animesubs import nyaa
 logger = logging.getLogger(__name__)
 
 
-def test_filters(config, entry):
-    min_episode = config.get('min_episode')
+def test_filters(feed, entry):
+    min_episode = feed.get('min_episode')
     if min_episode and not (entry.get('episode', 0) >= min_episode):
         return False
 
-    resolution = config.get('resolution')
+    resolution = feed.get('resolution')
     if resolution and not (resolution == entry.get('resolution')):
         return False
 
-    anime = config.get('anime')
+    anime = feed.get('anime')
     if anime and not(anime == entry.get('anime')):
         return False
 
