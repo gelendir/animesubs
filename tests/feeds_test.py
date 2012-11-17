@@ -1,7 +1,7 @@
 # coding=utf8
 import unittest
 
-from animesubs import feeds
+from animesubs import feeds, nyaa
 from mock import patch
 
 
@@ -191,8 +191,32 @@ class TestTestFilters(unittest.TestCase):
 
 class TestFetchEpisodes(unittest.TestCase):
 
-    def test_fetch_episodes(self):
-        assert False, "not written yet"
+    def setUp(self):
+        self.nyaa_result = [{
+            'subber'    : u'Commie',
+            'anime'     : u'Sword Art Online',
+            'episode'   : 2,
+            'resolution': u'720p',
+            'extension' : u'mkv',
+        }]
+
+    @patch('animesubs.nyaa.fetch_feed')
+    def test_fetch_episodes(self, mocked):
+        feed = {
+            'submitter': 'Commie',
+            'search': 'Sword Art Online',
+        }
+        feedconfig = {
+            'submitters': {
+                'Commie': 1,
+            },
+        }
+
+        mocked.return_value = self.nyaa_result
+
+        result = feeds.fetch_episodes("nyaa", feed, feedconfig)
+        mocked.asset_called_once_with(feed, feedconfig)
+
 
 
 class TestFetchEpisodesFromFeeds(unittest.TestCase):

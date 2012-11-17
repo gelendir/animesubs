@@ -25,6 +25,7 @@ def test_filters(feed, entry):
 def fetch_episodes(feedtype, feed, feedconfig):
     if feedtype == "nyaa":
         return nyaa.fetch_feed(feed, feedconfig)
+    return []
 
 def fetch_episodes_from_feeds(config):
     all_episodes = []
