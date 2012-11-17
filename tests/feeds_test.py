@@ -221,8 +221,63 @@ class TestFetchEpisodes(unittest.TestCase):
 
 class TestFetchEpisodesFromFeeds(unittest.TestCase):
 
-    def test_fetch_episodes_from_feeds(self):
-        assert False, "not written yet"
+    def setUp(self):
+        self.nyaa_result = [{
+            'subber'    : u'Commie',
+            'anime'     : u'Sword Art Online',
+            'episode'   : 2,
+            'resolution': u'720p',
+            'extension' : u'mkv',
+        }]
+
+    @patch('animesubs.feeds.fetch_episodes')
+    def test_fetch_with_empty_config(self, mocked):
+        config = {}
+        expected = []
+        mocked.return_value = []
+
+        result = feeds.fetch_episodes_from_feeds(config)
+
+        self.assertEquals(result, expected)
+        self.assertFalse(mocked.called)
+
+    @patch('animesubs.feeds.fetch_episodes')
+    def test_fetch_one_feed(self, mocked):
+        feedconfig = {'key': 'value'}
+        feed = {'search': 'test'}
+        config = {
+            'feedtype': {
+                'feedconfig': feedconfig,
+                'feeds': [feed],
+            }
+        }
+
+        mocked.return_value = self.nyaa_result
+
+        result = feeds.fetch_episodes_from_feeds(config)
+
+        mocked.assert_called_once_with('feedtype', feed, {'feedconfig':feedconfig})
+        self.assertEquals(result, self.nyaa_result)
+
+    @patch('animesubs.feeds.fetch_episodes')
+    def test_fetch_one_feed(self, mocked):
+        feedconfig = {'key': 'value'}
+        feed = {'search': 'test'}
+        config = {
+            'feedtype': {
+                'feedconfig': feedconfig,
+                'feeds': [feed, feed],
+            }
+        }
+
+        mocked.return_value = self.nyaa_result
+
+        expected = self.nyaa_result * 2
+
+        result = feeds.fetch_episodes_from_feeds(config)
+
+        mocked.assert_called_with('feedtype', feed, {'feedconfig':feedconfig})
+        self.assertEquals(result, expected)
 
 if __name__ == "__main__":
     unittest.main()

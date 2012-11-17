@@ -31,7 +31,7 @@ def fetch_episodes_from_feeds(config):
     all_episodes = []
 
     for feedtype, feedconfig in config.iteritems():
-        feeds = feedconfig.pop('feeds')
+        feeds = feedconfig.pop('feeds', {})
         for feed in feeds:
             episodes = (
                 e for e in fetch_episodes(feedtype, feed, feedconfig)
