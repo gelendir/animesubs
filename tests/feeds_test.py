@@ -217,7 +217,329 @@ class TestFetchEpisodes(unittest.TestCase):
         result = feeds.fetch_episodes("nyaa", feed, feedconfig)
         mocked.asset_called_once_with(feed, feedconfig)
 
+class TestFilterEpisodeVersions(unittest.TestCase):
 
+    def test_filter_empty_list(self):
+        episodes = []
+        expected = []
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(result, expected)
+
+    def test_filter_one_episode_no_version(self):
+        episodes = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+            }
+        ]
+        expected = episodes
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(result, expected)
+
+    def test_filter_one_episode_with_version(self):
+        episodes = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 2,
+            }
+        ]
+        expected = episodes
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(result, expected)
+
+    def test_filter_two_episodes_with_version(self):
+        episodes = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 2,
+            },
+            {
+                'anime': u"Mâgì",
+                'episode': 2,
+                'version': 2,
+            }
+        ]
+        expected = episodes
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(result, expected)
+
+    def test_filter_same_episode_two_versions(self):
+        episodes = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 1,
+            },
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 2,
+            }
+        ]
+        expected = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 2,
+            }
+        ]
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(result, expected)
+
+    def test_filter_same_episode_one_version(self):
+        episodes = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+            },
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 2,
+            }
+        ]
+        expected = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 2,
+            }
+        ]
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(result, expected)
+
+    def test_filter_two_anime(self):
+        episodes = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+            }
+        ]
+        expected = list(episodes)
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(sorted(result), sorted(expected))
+
+    def test_filter_two_anime_one_version(self):
+        episodes = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+                'version': 2,
+            }
+        ]
+        expected = list(episodes)
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(sorted(result), sorted(expected))
+
+    def test_filter_two_anime_two_versions(self):
+        episodes = [
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+                'version': 2,
+            },
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+                'version': 1,
+            },
+        ]
+        expected = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+                'version': 2,
+            },
+        ]
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(sorted(result), sorted(expected))
+
+    def test_filter_two_anime_three_episodes_one_version(self):
+        episodes = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+                'version': 2,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+            },
+        ]
+        expected = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+                'version': 2,
+            },
+        ]
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(sorted(result), sorted(expected))
+
+    def test_filter_two_anime_four_episodes_four_versions(self):
+        episodes = [
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+                'version': 2,
+            },
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 1,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+                'version': 1,
+            },
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 2,
+            },
+        ]
+        expected = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 2,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+                'version': 2,
+            },
+        ]
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(sorted(result), sorted(expected))
+
+    def test_filter_two_anime_four_episodes_two_versions(self):
+        episodes = [
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+                'version': 2,
+            },
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 2,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+            },
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+            },
+        ]
+        expected = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+                'version': 2,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+                'version': 2,
+            },
+        ]
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(sorted(result), sorted(expected))
+
+    def test_filter_two_anime_six_episodes_four_versions(self):
+        episodes = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+            },
+            {
+                'anime': u"Mâgì",
+                'episode': 2,
+                'version': 2,
+            },
+            {
+                'anime': u"Mâgì",
+                'episode': 2,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 2,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 2,
+                'version': 2,
+            },
+        ]
+        expected = [
+            {
+                'anime': u"Mâgì",
+                'episode': 1,
+            },
+            {
+                'anime': u"Mâgì",
+                'episode': 2,
+                'version': 2,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 1,
+            },
+            {
+                'anime': u"Àccel wôrld",
+                'episode': 2,
+                'version': 2,
+            },
+        ]
+
+        result = feeds.filter_episode_versions(episodes)
+        self.assertEquals(sorted(result), sorted(expected))
 
 class TestFetchEpisodesFromFeeds(unittest.TestCase):
 

@@ -1,6 +1,7 @@
 import logging
 import os
 import urllib
+import itertools
 
 from animesubs import nyaa
 
@@ -21,6 +22,15 @@ def test_filters(feed, entry):
         return False
 
     return True
+
+def filter_episode_versions(episodes):
+    anime_sort = lambda x: (x['anime'], x['episode'], x.get('version', 0))
+    anime_key = lambda x: (x['anime'], x['episode'])
+    episodes.sort(key=anime_sort, reverse=True)
+    return [
+            values.next()
+            for key, values in itertools.groupby(episodes, anime_key)
+            ]
 
 def fetch_episodes(feedtype, feed, feedconfig):
     if feedtype == "nyaa":
