@@ -2,6 +2,7 @@ import argparse
 import yaml
 import logging
 import os
+from pprint import pprint
 
 from animesubs import feeds, lib, download
 
@@ -23,6 +24,9 @@ def main():
 
     anime = feeds.fetch_episodes_from_feeds(config)
 
+    discarded = [a for a in anime if not 'anime' in a]
+    anime = [a for a in anime if a not in discarded]
+
     if args.filter_versions:
         anime = feeds.filter_episode_versions(anime)
 
@@ -31,6 +35,10 @@ def main():
         anime = lib.filter_missing(files, anime)
 
     download.download_torrents(anime, args.torrent_dir)
+
+    if len(discarded) > 0:
+        print "the following entries could not be processed:"
+        pprint(discarded)
 
 if __name__ == "__main__":
     main()
