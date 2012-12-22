@@ -1,0 +1,19 @@
+# vim: set ts=4 sw=4 expandtab:
+nyaa:
+    submitters:
+        Commie: 76430
+        gg: 9001
+        Horriblesubs: 64513
+
+    feeds:
+        - submitter: Horriblesubs
+          search: BTOOOM 1080p
+          min_episode: 12
+
+        - submitter: Commie
+          search: Psycho-Pass
+
+        - submitter: gg
+          search: Chuunibyou Demo Koi ga Shitai
+          anime: Chuunibyou Demo Koi ga Shitai!
+          min_episode: 12
