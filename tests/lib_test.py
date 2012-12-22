@@ -87,6 +87,19 @@ class TestInfoFromFilename(unittest.TestCase):
         result = lib.info_from_filename(filename)
         self.assertEquals(expected, result)
 
+    def test_filename_with_floating_point_episode_number(self):
+        filename = u"[Commie] Girls und Panzer - 5.5 [56CF43E1].mkv"
+        expected = {
+            'subber'     : u'Commie',
+            'anime'      : u'Girls und Panzer',
+            'episode'    : 5.5,
+            'crc32'      : '56CF43E1',
+            'extension'  : u'mkv',
+        }
+
+        result = lib.info_from_filename(filename)
+        self.assertEquals(expected, result)
+
 class TestFilterExisting(unittest.TestCase):
 
     def test_empty_filelist(self):

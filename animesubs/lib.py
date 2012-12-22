@@ -5,7 +5,7 @@ REGEX = re.compile(
     \[(?P<subber>.*?)\]             # Subber group
     (?P<anime>.*?)                  # Anime name
     [ _]-[ _]
-    (?P<episode>\d+)                # Episode
+    (?P<episode>\d+(\.\d+)?)        # Episode
     (v(?P<version>\d+))?            # version
     [ _]?
     (?P<additional>(\[.*?\])*?)     # Other info encapsulated in []
@@ -27,9 +27,14 @@ def info_from_filename(filename):
         info.update({
             'subber'    : groups['subber'].strip(),
             'anime'     : groups['anime'].replace("_", " ").strip(),
-            'episode'   : int(groups['episode']),
             'extension' : groups['extension'],
         })
+
+        episode = groups['episode']
+        if '.' in episode:
+            info['episode'] = float(episode)
+        else:
+            info['episode'] = int(episode)
 
         if groups['version']:
             info['version'] = int(groups['version'])
