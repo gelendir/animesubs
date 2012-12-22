@@ -21,7 +21,9 @@ setup(name='animesubs',
           "pyyaml",
           "feedparser",
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      entry_points={
+          'console_scripts': [
+              "download_feeds = animesubs.bin.download_feeds:main"
+          ]
+      }
       )
