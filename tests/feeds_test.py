@@ -60,6 +60,36 @@ class TestTestFilters(unittest.TestCase):
         result = feeds.test_filters(feed, entry)
         self.assertEquals(result, expected)
 
+    def test_min_episode_floating_point_episode_number_over_min(self):
+        feed = {
+            'min_episode': 2
+        }
+        entry = {
+            'subber'    : u'Commie',
+            'anime'     : u'Sword Art Online',
+            'episode'   : 2.5,
+            'extension' : u'mkv',
+        }
+        expected = True
+
+        result = feeds.test_filters(feed, entry)
+        self.assertEquals(result, expected)
+
+    def test_min_episode_floating_point_episode_number_under_min(self):
+        feed = {
+            'min_episode': 2
+        }
+        entry = {
+            'subber'    : u'Commie',
+            'anime'     : u'Sword Art Online',
+            'episode'   : 1.5,
+            'extension' : u'mkv',
+        }
+        expected = False
+
+        result = feeds.test_filters(feed, entry)
+        self.assertEquals(result, expected)
+
     def test_resolution_no_resolution(self):
         feed = {
             'resolution': '720p'
