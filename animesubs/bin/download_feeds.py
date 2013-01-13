@@ -8,14 +8,34 @@ from animesubs import feeds, lib, download
 
 logging.basicConfig(level=logging.INFO)
 
+def all_files_recursively(path):
+    fileset = set()
+    for root, dirs, files in os.walk(path):
+        for filename in files:
+            fileset.add(filename.decode('utf8'))
+    return fileset
+
+def scan_directories(anime, directories):
+    files = set()
+
+    for directory in directories:
+        files.update(all_files_recursively(directory))
+
+    return lib.filter_missing(files, anime)
+
 def main():
 
     parser = argparse.ArgumentParser(
         description="download torrent files from anime feeds")
-    parser.add_argument("--filescan", help="scan directory for existing files before downloading torrents")
-    parser.add_argument("--filter-versions", action='store_true', help="filter anime episodes that have multiple versions (keep last version)")
-    parser.add_argument("config", help="YAML config file")
-    parser.add_argument("torrent_dir", help="torrent files will be downloaded here")
+    parser.add_argument("-s", "--scan", action="append",
+        help="don't download torrents already downloaded in scanned directory "
+             "(can be specified multiple times)")
+    parser.add_argument("-l", "--latest-version", action='store_true',
+        help="download only latest version of an episode (v2, v3, etc)")
+    parser.add_argument("-c", "--config", default="config.yml",
+        help="YAML config file (default: config.yml)")
+    parser.add_argument("torrent_dir",
+        help="torrent files will be downloaded here")
 
     args = parser.parse_args()
 
@@ -27,12 +47,11 @@ def main():
     discarded = [a for a in anime if not 'anime' in a]
     anime = [a for a in anime if a not in discarded]
 
-    if args.filter_versions:
+    if args.latest_version:
         anime = feeds.filter_episode_versions(anime)
 
-    if args.filescan:
-        files = [x.decode('utf8') for x in os.listdir(args.filescan)]
-        anime = lib.filter_missing(files, anime)
+    if args.scan:
+        anime = scan_directories(anime, args.scan)
 
     download.download_torrents(anime, args.torrent_dir)
 
